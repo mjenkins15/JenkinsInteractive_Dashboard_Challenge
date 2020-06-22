@@ -2,33 +2,31 @@
 // Must create a server in Bash and use Incognito Window
 // in browser or Shft + Ctrl + R to refresh browser and ignore cache. 
 
-d3.json("samples.json").then((incomingData) => {
+d3.json("../samples.json").then((incomingData) => {
+//    function otuPlot(id) {
+    console.log(incomingData)
     function otuPlot(id) {
-    console.log(data)
     }
 
 // Use filter() to pass the function as its argument
-var otuSamples = incomingData.filter(otuPlot);
+var metadata = incomingData.metadata;
 
-//Check to make sure you are filtering the OTU's
-console.log(otuSamples);
+var otuSamples = metadata.filter(otuPlot);
 
-// Use the map method with the arrow function to return all
-//the filtered OTU's
+// Use the map method with the arrow function to return all the filtered OTU's
 var sample_values = otuSamples.map(samples => samples.name);
 
-// Use the map method with the arrow function to return all 
-//the filtered OTU metascores.
+// Use the map method with the arrow function to return all the filtered OTU metascores.
 var otu_ids = otuSamples.map(samples => samples.metascore);
 
 // Check your filtered metascores
-console.log(filteredSamples);
+console.log(otuSamples);
 
 //Create a trace
 var trace1 = {
     x: sample_values,
     y: otu_ids,
-    text: otu_labels,
+    //text: otu_labels,
     type:"bar"
 };
 
@@ -38,9 +36,10 @@ var data= [trace1];
 //Define the plot layout
 var layout = { 
     title:"Top 10  Operational Taxonomic Units (OTUs)",
-    xaxis: {title: "Title"},
-    yaxis: {title: "Metascore OTU's"}
-}
+    xaxis: { title: "Title"},
+    yaxis: { title: "Metascore OTU's"}
+};
+//Plot the chart to a div tag with id "bar-plot"
 Plotly.newPlot("bar", data, layout);
 });
 
