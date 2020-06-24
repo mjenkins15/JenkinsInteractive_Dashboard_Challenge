@@ -27,6 +27,8 @@
     // Check your filtered metascores
    //console.log(otuSamples);
 
+
+   //Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual 
    // Create a function
    function buildCharts(sampleid) {
     // Fetch the JSON data and console log it.
@@ -74,6 +76,35 @@
         };
         //Plot the chart to a div tag with id "bar"
         Plotly.newPlot("bar", data, layout);
+
+        //Create the bubble chart
+        var trace2 = {
+            x:otuSamples.otu_ids,
+            y: otuSamples.sample_values,
+            text: otuSamples.otu_labels,
+            mode: 'markers',
+            marker: {
+              size: otuSamples.sample_values,
+              color: otuSamples.otu_ids,
+              colorscale:"Earth"
+            }
+          };
+        console.log(trace2)
+          
+          var data = [trace2];
+          
+          var layout = {
+            title: 'Samples',
+            showlegend: false,
+            height: 600,
+            width: 600, 
+            margin: 200
+            
+          };
+          
+          Plotly.newPlot('bubble', data, layout);
+        
+        
     });
 }
 function buildMetadata(sampleid) {
@@ -100,6 +131,9 @@ function optionChanged(sampleid) {
 }
 init();
 
+// Create a bubble chart that displays each sample
+
+    
 
 
 
