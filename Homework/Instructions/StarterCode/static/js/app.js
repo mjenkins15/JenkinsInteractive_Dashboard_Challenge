@@ -1,34 +1,5 @@
- // Fetch the JSON data and console log it.
-// Must create a server in Bash and use Incognito Window
-// in browser or Shft + Ctrl + R to refresh browser and ignore cache. 
 
-//d3.json("../samples.json").then((incomingData) => {
-    //    function otuPlot(id) {
-        //console.log(incomingData)
-        //function otuPlot(id) {
-       //}
-    
-    // Use filter() to pass the function as its argument
-    //var samples = incomingData.samples;
-    //console.log(samples);
-
-    //Filter through the samples
-    
-    //var otuSamples = samples.filter(otuPlot);
-
-    //Filters through the samples
-    
-    // Use the map method with the arrow function to return all the filtered OTU's
-    //var  = otuSamples.map(samples => samples.name);
-    
-    // Use the map method with the arrow function to return all the filtered OTU metascores.
-   // var otu_ids = otuSamples.map(samples => samples.metascore);
-    
-    // Check your filtered metascores
-   //console.log(otuSamples);
-
-
-   //Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual 
+   // Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual 
    // Create a function
    function buildCharts(sampleid) {
     // Fetch the JSON data and console log it.
@@ -44,23 +15,23 @@
         var otuSamples = samples.filter(sample => sample.id==sampleid)[0];
         console.log(otuSamples.otu_ids,"This is working");
         // Use the map method with the arrow function to return all the filtered OTU's
-        //var sample_values = otuSamples.map(samples => samples.name);
-        //console.log(sample_values);
-        // Use the map method with the arrow function to return all the filtered OTU metascores.
-        //var otu_ids = otuSamples.map(samples => samples.otu_ids);
-        // var yticks = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse();
         var otu_ids = otuSamples.otu_ids.slice(0,10).reverse();
         var sample_values = otuSamples.sample_values.slice(0,10).reverse();
+        //Hover text
+        var otuLabels = otuSamples.otu_labels.slice(0,10).reverse()
+        var otuAxisLabel = `OTU:${otu_ids}`
         // Check your filtered metascores
         console.log(otuSamples);
         console.log(sample_values);
         console.log(otu_ids);
+        console.log(otuLabels);
+        console.log(otuAxisLabel);
         
         //Create a trace
         var trace1 = {
             x: sample_values,
-            y: otu_ids,
-            //text: otu_labels,
+            y: otuAxisLabel,
+            text: otuLabels,
             type: "bar",
             orientation: "h",
         };
@@ -71,8 +42,8 @@
             title: "Top 10  Operational Taxonomic Units (OTUs)",
             
             barmode: "group",
-            xaxis: { title: "Title" },
-            yaxis: { title: "Metascore OTU's"}
+            xaxis: { title: "Sample Values" },
+            yaxis: { title: "OTU IDs"}
         };
         //Plot the chart to a div tag with id "bar"
         Plotly.newPlot("bar", data, layout);
@@ -103,13 +74,50 @@
           };
           
           Plotly.newPlot('bubble', data, layout);
+
+        //BONUS: Gauge Chart
+        var data = [
+            {
+                domain: { x: [0, 1], y: [0, 1] },
+                value: 270,
+                title: { text: "Speed" },
+                type: "indicator",
+                mode: "gauge+number"
+            }
+        ];
+        
+        var layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
+        Plotly.newPlot('myDiv', data, layout);
         
         
     });
 }
+
+// get demographic info for the id and append
 function buildMetadata(sampleid) {
-    console.log(sampleid)
-}
+    d3.json("samples.json").then((incomingData) => {
+        //console.log(incomingData);
+        //console.log(sampleid)
+    
+        //get the metadata info
+        var metaData = incomingData.metadata; 
+        console.log(metaData);
+
+        //filter metadata information by sampleid
+        var metaInfo =metaData.filter(metaData => metaData.id==sampleid)[0]; 
+        console.log(metaInfo);
+
+        //place demographic info in <div id = "sample-metadata"....</div>
+        var demoInfo =d3.select(".panel-body")
+        
+        //clear the input value prior to new user input 
+        demoInfo.html("");
+    
+        
+      demoInfo.append('ul').html(`<li>${metaInfo.id}</li><li>${metaInfo.ethnicity}</li><li>${metaInfo.gender}</li><li>${metaInfo.age}</li><li>${metaInfo.location}</li><li>${metaInfo.bbtype}</li><li>${metaInfo.wfreq}</li>`)
+  }) 
+};
+
 function init() {
     var selector = d3.select("#selDataset");
     d3.json("samples.json").then((incomingData) => {
@@ -127,125 +135,6 @@ function init() {
 }
 function optionChanged(sampleid) {
     buildCharts(sampleid);
-    buildMetadata(sampleid);
+    buildMetadata(sampleid)
 }
-init();
-
-// Create a bubble chart that displays each sample
-
-    
-
-
-
-
-
-
-
-    //Create a trace
-    //var trace1 = {
-    //    x: sample_values,
-    //    y: otu_ids,
-        //text: otu_labels,
-    //    type:"bar"
-    //};
-    
-    //Create the data array for the plot
-    //var data= [trace1];
-    
-    //Define the plot layout
-    //var layout = { 
-    //   title:"Top 10  Operational Taxonomic Units (OTUs)",
-    //  xaxis: { title: "Title"},
-    //    yaxis: { title: "Metascore OTU's"}
-    //};
-    //Plot the chart to a div tag with id "bar-plot"
-    //Plotly.newPlot("bar", data, layout);
-    
-    
-    
-    //Promise Pending
-    //const dataPromise = d3.json("../../samples.json");
-    //    console.log("Data Promise:", dataPromise);
-    
-    //(Day 2 Activity 3)
-    //function unpack(rows, index) {
-    //    return rows.map(function(row) {
-    //      return row[index];
-    //    });
-    //  }
-    
-    
-    // Fetch data to build the plots
-    //function buildPlot() {
-    //    d3.json("../../samples.json").then(samples=>{ 
-    //        console.log(samples);
-    //        const 
-    
-    
-        // Get values from JSON response object to build the plots
-        // Use 'sample_values' as the values for the bar chart
-        //var sample_values = data.samples.filter(getPlot);
-            //console.log(getPlot);
-        // Use 'otu_ids' as the labels for the bar chart
-        //var otu_ids = data.samples.otu_ids; 
-        //Use 'otu_labels' as the hovertext for the chart
-        //var otu_labels = data.samples.otu_labels;
-    
-        //Create a trace
-        //var trace1 = {
-            //x: sample_values,
-            //y: otu_ids,
-           // text: otu_labels,
-            //type:"bar"
-        //};
-    
-        //var data= [trace1];
-        //var layout = { 
-            //title:"Top 10  Operational Taxonomic Units (OTUs)"
-        //}
-        //Plotly.newPlot("bar", data, layout);
-    //});
-
-
-
-//Promise Pending
-//const dataPromise = d3.json("../../samples.json");
-//    console.log("Data Promise:", dataPromise);
-
-//(Day 2 Activity 3)
-//function unpack(rows, index) {
-//    return rows.map(function(row) {
-//      return row[index];
-//    });
-//  }
-
-
-// Fetch data to build the plots
-//function buildPlot() {
-//    d3.json("../../samples.json").then(samples=>{ 
-//        console.log(samples);
-//        const 
-
-
-    // Get values from JSON response object to build the plots
-    // Use 'sample_values' as the values for the bar chart
-    //var sample_values = data.samples.filter(getPlot);
-        //console.log(getPlot);
-    // Use 'otu_ids' as the labels for the bar chart
-    //var otu_ids = data.samples.otu_ids; 
-    //Use 'otu_labels' as the hovertext for the chart
-    //var otu_labels = data.samples.otu_labels;
-
-    //Create a trace
-    //var trace1 = {
-        //x: sample_values,
-        //y: otu_ids,
-       // text: otu_labels,
-        //type:"bar"
-    //};
-
-    //var data= [trace1];
-    //var layout = { 
-        //title:"Top 10  Operational Taxonomic Units (OTUs)"
-    //}
-    //Plotly.newPlot("bar", data, layout);
+init()
