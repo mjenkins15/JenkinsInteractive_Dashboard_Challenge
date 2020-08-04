@@ -1,5 +1,4 @@
-
-   // Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual 
+  // Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual 
    // Create a function
    function buildCharts(sampleid) {
     // Fetch the JSON data and console log it.
@@ -69,7 +68,8 @@
             showlegend: false,
             height: 600,
             width: 600, 
-            margin: 200
+            margin: 200,
+            xaxis: { title: "OTU IDs" },
             
           };
           
@@ -138,3 +138,4 @@ function optionChanged(sampleid) {
     buildMetadata(sampleid)
 }
 init()
+
